@@ -47,10 +47,10 @@ class IDLE:
             case 0:
                 if self.face_dir_x == -1:
                     self.Idle[server.mode].clip_composite_draw(int(self.frame) * 23, 0, 22, 18,
-                                                             0.0, '', self.sx, self.y, self.kx, self.ky)
+                                                             0.0, 'h', self.sx, self.y, self.kx, self.ky)
                 else:
                     self.Idle[server.mode].clip_composite_draw(int(self.frame) * 23, 0, 22, 18,
-                                                             0.0, 'h', self.sx, self.y, self.kx, self.ky)
+                                                             0.0, '', self.sx, self.y, self.kx, self.ky)
             case 1:
                 if self.face_dir_x == -1:
                     self.Idle[server.mode].clip_composite_draw(int(self.frame) * 31, 0, 31, 28,
@@ -110,10 +110,10 @@ class RUN:
             case 0:
                 if self.dir_x == -1:
                     self.Run[server.mode].clip_composite_draw(int(self.frame) * 22, 0, 22, 20,
-                                                            0.0, '', self.sx, self.sy, self.kx, self.ky)
+                                                            0.0, 'h', self.sx, self.sy, self.kx, self.ky)
                 else:
                     self.Run[server.mode].clip_composite_draw(int(self.frame) * 22, 0, 22, 20,
-                                                            0.0, 'h', self.sx, self.sy, self.kx, self.ky)
+                                                            0.0, '', self.sx, self.sy, self.kx, self.ky)
             case 1:
                 if self.dir_x == -1:
                     self.Run[server.mode].clip_composite_draw(int(self.frame) * 30, 0, 30, 30,
@@ -182,10 +182,10 @@ class JUMP:
             case 0:
                 if self.face_dir_x == -1:
                     self.Jump[server.mode].clip_composite_draw(int(self.frame) * 25, 0, 25, 22,
-                                                             0.0, '', self.sx, self.sy, self.kx, self.ky)
+                                                             0.0, 'h', self.sx, self.sy, self.kx, self.ky)
                 else:
                     self.Jump[server.mode].clip_composite_draw(int(self.frame) * 25, 0, 25, 22,
-                                                             0.0, 'h', self.sx, self.sy, self.kx, self.ky)
+                                                             0.0, '', self.sx, self.sy, self.kx, self.ky)
             case 1:
                 if self.face_dir_x == -1:
                     self.Jump[server.mode].clip_composite_draw(int(self.frame) * 28, 0, 28, 34,
@@ -213,6 +213,7 @@ class SKILL:
     @staticmethod
     def enter(self, event):
         if event == AD:
+            self.skill_sound[server.mode].play()
             match server.mode:
                 case 0:
                     self.timer = 310
@@ -234,25 +235,21 @@ class SKILL:
     def do(self):
         match server.mode:
             case 0:
-                self.skill_sound[0].play()
                 self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 9
                 self.timer -= 1
                 if self.timer == 0:
                     self.add_event(TIMER)
             case 1:
-                self.skill_sound[1].play()
                 self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
                 self.timer -= 1
                 if self.timer == 0:
                     self.add_event(TIMER)
             case 2:
-                self.skill_sound[2].play()
                 self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
                 self.timer -= 1
                 if self.timer == 0:
                     self.add_event(TIMER)
             case 3:
-                if self.frame < 1: self.skill_sound[3].play()
                 self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
                 self.move_boom += self.face_dir_x * 2 * RUN_SPEED_PPS * game_framework.frame_time
                 if int(self.frame) == 1:
@@ -273,10 +270,10 @@ class SKILL:
             case 0:
                 if self.face_dir_x == -1:
                     self.Skill[server.mode].clip_composite_draw(int(self.frame) * 30, 0, 30, 22,
-                                                              0.0, '', self.sx, self.y, self.kx + 3, self.ky + 3)
+                                                              0.0, 'h', self.sx, self.y, self.kx + 3, self.ky + 3)
                 else:
                     self.Skill[server.mode].clip_composite_draw(int(self.frame) * 30, 0, 30, 22,
-                                                              0.0, 'h', self.sx, self.y, self.kx + 3, self.ky + 3)
+                                                              0.0, '', self.sx, self.y, self.kx + 3, self.ky + 3)
             case 1:
                 if self.face_dir_x == -1:
                     self.Skill[server.mode].clip_composite_draw(int(self.frame) * 56, 0, 56, 31,
@@ -331,10 +328,10 @@ class SLEEP:
     def draw(self):
         if self.face_dir_x == -1:
             self.Sleep.clip_composite_draw(int(self.frame) * 30, 0, 30, 18,
-                                           0.0, '', self.sx, self.y, self.kx, self.ky)
+                                           0.0, 'h', self.sx, self.y, self.kx, self.ky)
         else:
             self.Sleep.clip_composite_draw(int(self.frame) * 30, 0, 30, 18,
-                                           0.0, 'h', self.sx, self.y, self.kx, self.ky)
+                                           0.0, '', self.sx, self.y, self.kx, self.ky)
 
 
 next_state = {
@@ -357,7 +354,7 @@ class Kirby:
         self.hp_cnt = 8.0
         self.x, self.y = 30, 100
         self.kx, self.ky = 70, 55
-        self.face_dir_x, self.dir_x = 0, 0
+        self.face_dir_x, self.dir_x = 1, 0
         self.dir_y = 1
         self.frame = 0
         self.timer = 0
@@ -444,7 +441,7 @@ class Kirby:
         self.cur_state.draw(self)
         debug_print('PPPP')
         debug_print(f'Face Dir: {self.face_dir_x}, Dir: {self.dir_x}')
-        #draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_bb())
 
     def set_background(self, bg):
         self.bg = bg
@@ -476,9 +473,9 @@ class Kirby:
         elif self.cur_state == SKILL and server.mode == 0:
             if self.face_dir_x == 1:
                 return self.sx - 25, self.sy - 25, \
-                       self.sx + 75, self.sy + 25
+                       self.sx + 100, self.sy + 25
             else:
-                return self.sx - 75, self.sy - 25, \
+                return self.sx - 100, self.sy - 25, \
                        self.sx + 25, self.sy + 25
         elif self.cur_state == SKILL and server.mode == 1:
             if self.face_dir_x == 1:

@@ -32,7 +32,7 @@ class BASIC_MONSTER:
 
     def draw(self):
         self.cur_state.draw(self)
-        #draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_bb())
 
     def add_event(self, event):
         self.event_que.insert(0, event)
@@ -105,7 +105,7 @@ class SWORD_MONSTER:
 
     def draw(self):
         self.cur_state.draw(self)
-        #draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_bb())
 
     def add_event(self, event):
         self.event_que.insert(0, event)
@@ -178,7 +178,7 @@ class SPARK_MONSTER:
 
     def draw(self):
         self.cur_state.draw(self)
-        #draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_bb())
 
     def add_event(self, event):
         self.event_que.insert(0, event)
@@ -251,7 +251,7 @@ class BOMBER_MONSTER:
 
     def draw(self):
         self.cur_state.draw(self)
-        #draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_bb())
 
     def add_event(self, event):
         self.event_que.insert(0, event)
