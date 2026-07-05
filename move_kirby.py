@@ -19,10 +19,6 @@ FRAMES_PER_ACTION = 8
 key_event_table = {
     (SDL_KEYUP, SDLK_a): AD,
     (SDL_KEYDOWN, SDLK_UP): JD,
-    (SDL_KEYDOWN, SDLK_RIGHT): RD,
-    (SDL_KEYDOWN, SDLK_LEFT): LD,
-    (SDL_KEYUP, SDLK_RIGHT): RU,
-    (SDL_KEYUP, SDLK_LEFT): LU
 }
 
 
@@ -368,6 +364,7 @@ class Kirby:
         self.s_timer = 0
 
         self.event_que = []
+        self.keys_pressed = set()
         self.cur_state = IDLE
         self.cur_state.enter(self, None)
 
@@ -408,6 +405,27 @@ class Kirby:
             self.basic_sound[i].set_volume(32)
 
     def update(self):
+        if SDLK_RIGHT in self.keys_pressed and SDLK_LEFT not in self.keys_pressed:
+            self.dir_x = 1
+            self.face_dir_x = 1
+        elif SDLK_LEFT in self.keys_pressed and SDLK_RIGHT not in self.keys_pressed:
+            self.dir_x = -1
+            self.face_dir_x = -1
+        else:
+            self.dir_x = 0
+
+        if self.cur_state in (IDLE, RUN, SLEEP):
+            if self.dir_x != 0:
+                if self.cur_state in (IDLE, SLEEP):
+                    self.cur_state.exit(self, None)
+                    self.cur_state = RUN
+                    self.cur_state.enter(self, None)
+            else:
+                if self.cur_state == RUN:
+                    self.cur_state.exit(self, None)
+                    self.cur_state = IDLE
+                    self.cur_state.enter(self, None)
+
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
@@ -437,6 +455,17 @@ class Kirby:
         self.event_que.insert(0, event)
 
     def handle_event(self, event):
+        if event.type == SDL_KEYDOWN:
+            if event.key == SDLK_RIGHT:
+                self.keys_pressed.add(SDLK_RIGHT)
+            elif event.key == SDLK_LEFT:
+                self.keys_pressed.add(SDLK_LEFT)
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                self.keys_pressed.discard(SDLK_RIGHT)
+            elif event.key == SDLK_LEFT:
+                self.keys_pressed.discard(SDLK_LEFT)
+
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)

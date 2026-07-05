@@ -188,7 +188,7 @@ def update():
         server.stage_replay = False
     if server.stage_restart:
         game_world.clear()
-        if server.stage_number != 2 or 5 or 8 or 10:
+        if server.stage_number not in (2, 5, 8, 10):
             server.mode = 0
         stage(server.stage_number)
         server.stage_restart = False
